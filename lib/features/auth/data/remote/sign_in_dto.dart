@@ -1,23 +1,11 @@
 class SignInDto {
-  final String user;
-  final String password;
+  final String message;
 
-  SignInDto({
-    required this.user,
-    required this.password,
-  });
-
-  Map<String, dynamic> toMap() {
-    return {
-      'user': user,
-      'password': password,
-    };
-  }
+  SignInDto({required this.message});
 
   factory SignInDto.fromJson(Map<String, dynamic> json) {
     return SignInDto(
-      user: json['user'] as String,
-      password: json['password'] as String,
+      message: json['message'] as String,
     );
   }
 }

@@ -23,7 +23,7 @@ dev_dependencies:
   flutter_lints: ^4.0.0
 
 flutter:
-assets:
-  - assets/logo.png
-  - assets/fondo.png
+  assets:
+    - assets/fondo.png
+    - assets/logo.png
 uses-material-design: true

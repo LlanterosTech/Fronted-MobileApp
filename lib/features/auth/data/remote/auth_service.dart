@@ -6,30 +6,45 @@ import 'package:http/http.dart' as http;
 import 'package:plantita_app_movil/features/auth/data/remote/sign_up_dto.dart';
 
 class AuthService {
-  Future<SignInDto?> login(String user, String password) async {
-    http.Response response = await http.post(Uri.parse(AppConstants.signIn),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(SignInDto(user: user, password: password).toMap()));
+  Future<SignInDto?> login(String email, String password) async {
+    final response = await http.post(
+      Uri.parse(AppConstants.signIn),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({'email': email, 'password': password}),
+    );
+    final json = jsonDecode(response.body);
+
     if (response.statusCode == HttpStatus.ok) {
-      Map<String, dynamic> json = jsonDecode(response.body);
-      final loginDto = SignInDto.fromJson(json);
-      return loginDto;
+      return SignInDto.fromJson(json);
+    } else if (response.statusCode == HttpStatus.unauthorized) {
+      return SignInDto.fromJson(json);
     }
     return null;
   }
 
-  Future<bool> signUp(
-      String user, String name, String lastName, String password) async {
-    http.Response response = await http.post(Uri.parse(AppConstants.signUp),
-        headers: {"Content-Type": "application/json"},
-        body: jsonEncode(SignUpDto(
-                user: user,
-                name: name,
-                lastName: lastName,
-                password: password,
-                preferredLanguage: 'Español',
-                role: 'User')
-            .toMap()));
-    return response.statusCode == HttpStatus.created;
+  Future<SignUpResponseDto?> signUp(String email, String name, String lastName,
+      String password, String preferredLanguage, String role) async {
+    final response = await http.post(
+      Uri.parse(AppConstants.signUp),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({
+        'email': email,
+        'name': name,
+        'lastName': lastName,
+        'password': password,
+        'preferredLanguage': 'Español',
+        'role': 'User',
+        'timeZone': DateTime.now().timeZoneName,
+        'dateCreated': DateTime.now().toIso8601String(),
+      }),
+    );
+
+    final json = jsonDecode(response.body);
+
+    if (response.statusCode == HttpStatus.created ||
+        response.statusCode == HttpStatus.badRequest) {
+      return SignUpResponseDto.fromJson(json);
+    }
+    return null;
   }
 }

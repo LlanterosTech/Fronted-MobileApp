@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plantita_app_movil/features/auth/data/remote/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -13,6 +14,7 @@ class __LoginPageStateState extends State<LoginPage> {
   bool inputError = false;
   String? alertMessage;
   bool isSubmitting = false;
+  final AuthService _authService = AuthService();
 
   void showAlert(String message) {
     setState(() {
@@ -31,21 +33,32 @@ class __LoginPageStateState extends State<LoginPage> {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
 
-    if (email == 'admin' && password == 'admin') {
-      Navigator.pushReplacementNamed(context, '/init');
+    if (email.isEmpty || password.isEmpty) {
+      showAlert("Complete todo los campos.");
+      setState(() => inputError = true);
+      await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
+      setState(() => inputError = false);
+      setState(() => isSubmitting = false);
       return;
     }
 
-    // Simula la verificación de reCAPTCHA y backend
-    await Future.delayed(const Duration(seconds: 1));
+    setState(() => inputError = false);
+
+    final result = await _authService.login(email, password);
+
+    if (!mounted) return;
+
     setState(() => isSubmitting = false);
 
-    if (email.isEmpty || password.isEmpty) {
+    if (result != null) {
+      Navigator.pushReplacementNamed(context, '/init');
+    } else {
       showAlert("Usuario o contraseña incorrectos.");
       setState(() => inputError = true);
       await Future.delayed(const Duration(seconds: 2));
+      if (!mounted) return;
       setState(() => inputError = false);
-      return;
     }
   }
 
@@ -80,7 +93,7 @@ class __LoginPageStateState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Image.asset('logo.png', width: 110),
+                    Image.asset('assets/logo.png', width: 110),
                     const SizedBox(height: 30),
                     if (alertMessage != null)
                       Container(
