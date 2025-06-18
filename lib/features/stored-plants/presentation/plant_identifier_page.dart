@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:plantita_app_movil/features/auth/data/remote/user_service.dart';
 import 'package:plantita_app_movil/features/stored-plants/data/remote/plant_service.dart';
 import 'package:plantita_app_movil/features/stored-plants/domain/plant.dart';
 import 'dart:io';
@@ -12,7 +13,7 @@ class PlantIdentifierPage extends StatefulWidget {
 }
 
 class PlantIdentifierPageState extends State<PlantIdentifierPage> {
-  String userName = "";
+  String userName = '';
   File? selectedImage;
   Plant? identifiedPlant;
 
@@ -27,8 +28,9 @@ class PlantIdentifierPageState extends State<PlantIdentifierPage> {
   }
 
   Future<void> loadUserData() async {
+    final user = await UserService().getInfoUser();
     setState(() {
-      userName = "Usuario Ejemplo";
+      userName = user?.name ?? "Usuario";
     });
   }
 
@@ -66,8 +68,8 @@ class PlantIdentifierPageState extends State<PlantIdentifierPage> {
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     children: [
-                      const Text("¡Hola, \$userName!",
-                          style: TextStyle(
+                      Text("¡Hola, $userName!",
+                          style: const TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 10),
                       const Text("Sube una imagen para identificar tu planta"),

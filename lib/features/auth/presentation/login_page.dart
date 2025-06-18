@@ -110,7 +110,7 @@ class __LoginPageStateState extends State<LoginPage> {
                     const SizedBox(height: 20),
                     _buildTextInput(
                       controller: _emailController,
-                      icon: Icons.person,
+                      icon: Icons.email,
                       hintText: 'Usuario',
                       isError: inputError,
                     ),
@@ -122,11 +122,7 @@ class __LoginPageStateState extends State<LoginPage> {
                       isError: inputError,
                       obscureText: true,
                     ),
-                    const SizedBox(height: 16),
-                    const SizedBox(
-                      height: 80,
-                    ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 40),
                     ElevatedButton(
                       onPressed: isSubmitting ? null : handleLogin,
                       style: ElevatedButton.styleFrom(
@@ -187,12 +183,13 @@ class __LoginPageStateState extends State<LoginPage> {
       child: Row(
         children: [
           const SizedBox(width: 10),
-          Icon(icon, color: Colors.grey),
+          Icon(icon, color: Colors.black54),
           const SizedBox(width: 10),
           Expanded(
             child: TextField(
               controller: controller,
               obscureText: obscureText,
+              style: const TextStyle(color: Colors.black87, fontSize: 16),
               decoration: InputDecoration(
                 border: InputBorder.none,
                 hintText: hintText,

@@ -13,6 +13,7 @@ dependencies:
     sdk: flutter
   http: ^1.2.2
   image_picker: ^1.1.2
+  shared_preferences: ^2.2.2
 
   cupertino_icons: ^1.0.8
 
@@ -26,4 +27,4 @@ flutter:
   assets:
     - assets/fondo.png
     - assets/logo.png
-uses-material-design: true
+  uses-material-design: true
