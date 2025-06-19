@@ -16,6 +16,8 @@ class PlantIdentifierPageState extends State<PlantIdentifierPage> {
   String userName = '';
   File? selectedImage;
   Plant? identifiedPlant;
+  String plantId = '';
+  Map<String, dynamic>? formData;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
@@ -41,6 +43,39 @@ class PlantIdentifierPageState extends State<PlantIdentifierPage> {
     setState(() {
       identifiedPlant = plant;
     });
+  }
+
+  Future<void> submitForm() async {
+    try {
+      final payload = {
+        'customName': formData?['customName'] ?? '',
+        'location': formData?['location'] ?? '',
+        'note': formData?['note'] ?? '',
+      };
+      plantId = identifiedPlant?.plantId ?? '';
+
+      await IdentificationPlantsService().sendFormData(plantId, payload);
+
+      // Mostrar mensaje de éxito
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Datos enviados con éxito!')),
+      );
+
+      // Limpiar formulario
+      setState(() {
+        formData?['customName'] = '';
+        formData?['location'] = '';
+        formData?['note'] = '';
+        nameController.clear();
+        locationController.clear();
+      });
+    } catch (error) {
+      print("Error enviando datos del formulario: $error");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Error enviando datos. Intenta nuevamente.')),
+      );
+    }
   }
 
   @override
@@ -148,7 +183,16 @@ class PlantIdentifierPageState extends State<PlantIdentifierPage> {
                             ),
                             const SizedBox(height: 12),
                             ElevatedButton(
-                              onPressed: null,
+                              onPressed: () {
+                                setState(() {
+                                  formData = {
+                                    'customName': nameController.text,
+                                    'location': locationController.text,
+                                    'note': noteController.text,
+                                  };
+                                });
+                                submitForm();
+                              },
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green,
                                   shape: const StadiumBorder()),

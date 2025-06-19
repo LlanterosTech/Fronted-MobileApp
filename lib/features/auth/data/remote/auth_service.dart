@@ -14,7 +14,9 @@ class AuthService {
       body: jsonEncode({'email': email, 'password': password}),
     );
 
+    print('Respuesta: "${response.body}"');
     final json = jsonDecode(response.body);
+    print('Status code: ${response.statusCode}');
 
     if (response.statusCode == HttpStatus.ok) {
       print("Usuario autenticado correctamente");
@@ -25,6 +27,14 @@ class AuthService {
     } else if (response.statusCode == HttpStatus.unauthorized) {
       print("No esta autenticado");
     }
+
+    if (response.body.isNotEmpty) {
+      final json = jsonDecode(response.body);
+      // ...
+    } else {
+      print('El body está vacío');
+    }
+
     return null;
   }
 
